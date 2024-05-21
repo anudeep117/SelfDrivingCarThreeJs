@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Car from './car.js';
+import Road from './road.js';
 
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
@@ -25,12 +26,17 @@ scene.add(axesHelper);
 const gridHelper = new THREE.GridHelper(20, 20, 'white', 'white');
 gridHelper.rotation.x=Math.PI/2;
 scene.add(gridHelper);
+const cameraHelper = new THREE.CameraHelper(camera);
+scene.add(cameraHelper);
+
+// add road
+const road = new Road(1000);
+scene.add(road.mesh);
 
 // add car
 const car = new Car(new THREE.Vector3(0, 0, 0));
 scene.add(car.mesh);
-camera.position.set(...car.carCameraPosition);
-camera.lookAt(car.carCameraLookAt);
+
 
 // add light
 const light = createLight();
@@ -46,7 +52,7 @@ function createLight() {
     const color = 0xFFFFFF;
     const intensity = 3;
     const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(-5, 7, 5);
+    light.position.set(-5, -7, 5);
     return light;
 }
 
@@ -65,9 +71,16 @@ function resizeRendererToDisplaySize(renderer) {
     return needResize;
 }
 
-function render() {
-    // time *= 0.001;
+let prevTime = 0;
+let delta = 0;
 
+function render(time) {
+    delta = time - prevTime;
+    // console.log(delta);
+    car.update();
+    camera.position.set(...car.carCameraPosition);
+    camera.lookAt(car.carCameraLookAt);
+    
     if (resizeRendererToDisplaySize(renderer)) {
         const canvas = renderer.domElement;
         camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -76,4 +89,5 @@ function render() {
 
     renderer.render(scene, camera);
     requestAnimationFrame(render);
+    prevTime = time;
 }
