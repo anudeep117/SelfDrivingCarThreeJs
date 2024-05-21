@@ -26,6 +26,7 @@ class Car {
         
         this.mesh.position.set(...this.position);
         this.yaw = this.mesh.rotation.z; // rad
+        this.prevYaw = this.yaw;
 
         this.carCameraPosition = new THREE.Vector3();
         this.carCameraLookAt = new THREE.Vector3();
@@ -64,11 +65,12 @@ class Car {
     }
 
     #move() {
-        this.dynamics.drive(this.position, this.yaw);
+        this.dynamics.drive(this.prevYaw);
         this.position.x += this.dynamics.Vx;
         this.position.y += this.dynamics.Vy;
         this.yaw += this.dynamics.yawRate;
-        console.table(this.dynamics.yaw);
+        // console.table(this.dynamics.yaw);
+        this.prevYaw = this.yaw;
     }
 }
 
