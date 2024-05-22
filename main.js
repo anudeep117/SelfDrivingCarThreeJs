@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Timer } from 'three/addons/misc/Timer.js';
 import Car from './car.js';
 import Road from './road.js';
 
@@ -20,14 +21,16 @@ const camera = new THREE.PerspectiveCamera(
     , 2000
 );
 
+// const orbitControls = new OrbitControls(camera, renderer.domElement);
+
 // debug
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 const gridHelper = new THREE.GridHelper(20, 20, 'white', 'white');
 gridHelper.rotation.x=Math.PI/2;
 scene.add(gridHelper);
-const cameraHelper = new THREE.CameraHelper(camera);
-scene.add(cameraHelper);
+// const cameraHelper = new THREE.CameraHelper(camera);
+// scene.add(cameraHelper);
 
 // add road
 const road = new Road(1000);
@@ -71,15 +74,12 @@ function resizeRendererToDisplaySize(renderer) {
     return needResize;
 }
 
-let prevTime = 0;
-let delta = 0;
-
 function render(time) {
-    delta = time - prevTime;
-    // console.log(delta);
+    requestAnimationFrame(render);
+
     car.update();
     camera.position.set(...car.carCameraPosition);
-    camera.lookAt(car.carCameraLookAt);
+    camera.rotation.set(...car.lookAtThis);
     
     if (resizeRendererToDisplaySize(renderer)) {
         const canvas = renderer.domElement;
@@ -88,6 +88,4 @@ function render(time) {
     }
 
     renderer.render(scene, camera);
-    requestAnimationFrame(render);
-    prevTime = time;
 }

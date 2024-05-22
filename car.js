@@ -29,9 +29,10 @@ class Car {
         this.prevYaw = this.yaw;
 
         this.carCameraPosition = new THREE.Vector3();
-        this.carCameraLookAt = new THREE.Vector3();
+        this.lookAtThis = new THREE.Euler(53 * Math.PI / 180, 0, -Math.PI / 2, 'ZXY');
 
-        this.dynamics = new VehicleDynamics();
+        const dt = 0.1;
+        this.dynamics = new VehicleDynamics(dt);
     }
 
     update() {
@@ -47,7 +48,7 @@ class Car {
             , this.position.z
         );
         this.mesh.rotation.z = this.yaw; // rad
-        // this.mesh.rotation.z = 45 * Math.PI / 180; // rad
+        // console.log(this.mesh.rotation.z);
     }
 
     #updateCameraPosition() {
@@ -56,21 +57,17 @@ class Car {
             , this.position.y
             , this.position.z + this.height * 3
         );
-
-        this.carCameraLookAt.set(
-            this.position.x  + this.length / 2
-            , this.position.y
-            , this.position.z + this.height / 2
-        );
     }
 
     #move() {
-        this.dynamics.drive(this.prevYaw);
-        this.position.x += this.dynamics.Vx;
-        this.position.y += this.dynamics.Vy;
-        this.yaw += this.dynamics.yawRate;
-        // console.table(this.dynamics.yaw);
-        this.prevYaw = this.yaw;
+        this.dynamics.drive(this.yaw);
+        this.position.x += this.dynamics.Vx * this.dynamics.dt;
+        this.position.y += this.dynamics.Vy * this.dynamics.dt;
+        this.yaw += this.dynamics.yawRate * this.dynamics.dt;
+
+        if (this.yaw > Math.PI * 2 || this.yaw < -Math.PI * 2) {
+            this.yaw = 0;
+        }
     }
 }
 
