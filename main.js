@@ -10,6 +10,12 @@ const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('gray');
 
+// add light
+const light = createLight();
+scene.add(light);
+const ambientLight = createAmbientLight();
+scene.add(ambientLight);
+
 // add camera
 // camera.position.x // Right +ve
 // camera.position.y // Up +ve
@@ -20,6 +26,8 @@ const camera = new THREE.PerspectiveCamera(
     , 0.1
     , 2000
 );
+// car is on XY plane so, let camera know Z is up.
+camera.up = new THREE.Vector3(0, 0, 1);
 
 // const orbitControls = new OrbitControls(camera, renderer.domElement);
 
@@ -39,13 +47,6 @@ scene.add(road.mesh);
 // add car
 const car = new Car(new THREE.Vector3(0, 0, 0));
 scene.add(car.mesh);
-
-
-// add light
-const light = createLight();
-scene.add(light);
-const ambientLight = createAmbientLight();
-scene.add(ambientLight);
 
 // Render
 requestAnimationFrame(render);
@@ -79,7 +80,7 @@ function render(time) {
 
     car.update();
     camera.position.set(...car.carCameraPosition);
-    camera.rotation.set(...car.lookAtThis);
+    camera.lookAt(...car.lookAtPos);
     
     if (resizeRendererToDisplaySize(renderer)) {
         const canvas = renderer.domElement;

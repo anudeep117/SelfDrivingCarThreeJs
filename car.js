@@ -29,6 +29,7 @@ class Car {
         this.prevYaw = this.yaw;
 
         this.carCameraPosition = new THREE.Vector3();
+        this.lookAtPos = new THREE.Vector3();
         this.lookAtThis = new THREE.Euler(53 * Math.PI / 180, 0, -Math.PI / 2, 'ZXY');
 
         const dt = 0.1;
@@ -48,7 +49,6 @@ class Car {
             , this.position.z
         );
         this.mesh.rotation.z = this.yaw; // rad
-        // console.log(this.mesh.rotation.z);
     }
 
     #updateCameraPosition() {
@@ -56,6 +56,12 @@ class Car {
             this.position.x - this.length * 1
             , this.position.y
             , this.position.z + this.height * 3
+        );
+
+        this.lookAtPos.set(
+            this.position.x + this.length / 2
+            , this.position.y
+            , this.position.z + this.height / 2
         );
     }
 

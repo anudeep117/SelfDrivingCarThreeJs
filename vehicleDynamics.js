@@ -9,7 +9,7 @@ class VehicleDynamics {
         this.dt = dt;
         this.mass = 1000; // kg
         this.wheelBase = 2.5; // m
-        this.Lr = this.wheelBase / 2; // m
+        this.lr = this.wheelBase / 2; // m
 
         this.acceleration = 4; // m/s^2
         this.speed = 0; // m/s
@@ -38,13 +38,6 @@ class VehicleDynamics {
             this.throttle = -1;
         } else {
             this.throttle = 0;
-        }
-        
-        if (this.throttle > 1) {
-            this.throttle = 1;
-        }
-        if (this.throttle < -1) {
-            this.throttle = -1;
         }
 
         this.speed += this.throttle * this.acceleration * this.dt;
@@ -85,15 +78,13 @@ class VehicleDynamics {
         }
 
         this.sideSlip = Math.atan2(
-            this.Lr * Math.tan(this.steeringAngle * Math.PI / 180)
+            this.lr * Math.tan(this.steeringAngle * Math.PI / 180)
             , this.wheelBase
         ); // rad
 
         this.yawRate = (this.speed / this.wheelBase) *
         Math.cos(this.sideSlip) *
         Math.tan(this.steeringAngle * Math.PI / 180); // rad/s
-
-        console.log(this.yawRate);
 
         this.Vx = this.speed * Math.cos(this.sideSlip + prevYaw);
         this.Vy = this.speed * Math.sin(this.sideSlip + prevYaw);
